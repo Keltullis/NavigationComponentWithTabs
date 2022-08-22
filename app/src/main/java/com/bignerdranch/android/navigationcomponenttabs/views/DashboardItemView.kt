@@ -13,6 +13,7 @@ import com.bignerdranch.android.navigationcomponenttabs.R
 import com.bignerdranch.android.navigationcomponenttabs.databinding.PartDashboardItemBinding
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.Box
 
+// Своя вьюшка
 class DashboardItemView(
     context: Context,
     attributesSet: AttributeSet?,

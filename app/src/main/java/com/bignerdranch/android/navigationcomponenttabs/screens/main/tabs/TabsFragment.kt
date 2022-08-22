@@ -21,6 +21,7 @@ class TabsFragment : Fragment(R.layout.fragment_tabs) {
         // Получаем навигейшэн контроллер
         val navController = navHost.navController
         // Соединяем BottomNavigationView с фрагмент контэйнером
+        // Таким образом,мы связали меню,с фрагмент контэйнером,а значит и с графом,+ id пунктов меню едентичный id в графе
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
         // Теперь при нажатии на кнопки будут показываться соответствующие экраны
     }
