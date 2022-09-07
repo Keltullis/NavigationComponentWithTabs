@@ -1,6 +1,7 @@
 package com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities
 
 data class Account(
+    val id: Long,
     val username: String,
     val email: String,
     val createdAt: Long = UNKNOWN_CREATED_AT

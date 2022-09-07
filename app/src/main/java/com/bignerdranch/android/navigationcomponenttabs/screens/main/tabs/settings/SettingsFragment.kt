@@ -2,11 +2,13 @@ package com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.setti
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.navigationcomponenttabs.R
 import com.bignerdranch.android.navigationcomponenttabs.Repositories
 import com.bignerdranch.android.navigationcomponenttabs.databinding.FragmentSettingsBinding
+import com.bignerdranch.android.navigationcomponenttabs.utils.observeEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.viewModelCreator
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
@@ -21,6 +23,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         val adapter = setupList()
         viewModel.boxSettings.observe(viewLifecycleOwner) { adapter.renderSettings(it) }
+
+        viewModel.showErrorMessageEvent.observeEvent(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupList(): SettingsAdapter {

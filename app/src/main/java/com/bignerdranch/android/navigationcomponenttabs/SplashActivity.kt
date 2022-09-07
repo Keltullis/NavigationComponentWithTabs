@@ -14,6 +14,7 @@ import com.bignerdranch.android.navigationcomponenttabs.screens.splash.SplashVie
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Repositories.init(applicationContext)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
     }

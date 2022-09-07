@@ -6,9 +6,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import com.bignerdranch.android.navigationcomponenttabs.R
+import com.bignerdranch.android.navigationcomponenttabs.model.StorageException
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.BoxesRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.Box
+import com.bignerdranch.android.navigationcomponenttabs.utils.MutableLiveEvent
+import com.bignerdranch.android.navigationcomponenttabs.utils.publishEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.share
+
 
 class SettingsViewModel(
     private val boxesRepository: BoxesRepository
@@ -16,6 +21,9 @@ class SettingsViewModel(
 
     private val _boxSettings = MutableLiveData<List<BoxSetting>>()
     val boxSettings = _boxSettings.share()
+
+    private val _showErrorMessageEvent = MutableLiveEvent<Int>()
+    val showErrorMessageEvent =_showErrorMessageEvent.share()
 
     init {
         viewModelScope.launch {
@@ -31,10 +39,26 @@ class SettingsViewModel(
     }
 
     override fun enableBox(box: Box) {
-        viewModelScope.launch { boxesRepository.activateBox(box) }
+        viewModelScope.launch {
+            try {
+                boxesRepository.activateBox(box)
+            } catch (e: StorageException) {
+                showStorageErrorMessage()
+            }
+        }
     }
 
     override fun disableBox(box: Box) {
-        viewModelScope.launch { boxesRepository.deactivateBox(box) }
+        viewModelScope.launch {
+            try {
+                boxesRepository.deactivateBox(box)
+            } catch (e: StorageException) {
+                showStorageErrorMessage()
+            }
+        }
+    }
+
+    private fun showStorageErrorMessage() {
+        _showErrorMessageEvent.publishEvent(R.string.storage_error)
     }
 }

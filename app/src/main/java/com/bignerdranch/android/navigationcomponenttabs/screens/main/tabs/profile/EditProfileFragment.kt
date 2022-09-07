@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bignerdranch.android.navigationcomponenttabs.R
 import com.bignerdranch.android.navigationcomponenttabs.Repositories
 import com.bignerdranch.android.navigationcomponenttabs.databinding.FragmentEditProfileBinding
-import com.bignerdranch.android.navigationcomponenttabs.utils.findTopNavController
 import com.bignerdranch.android.navigationcomponenttabs.utils.observeEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.viewModelCreator
 
@@ -49,15 +49,15 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         binding.usernameEditText.setText(username)
     }
 
-    private fun observeEmptyFieldErrorEvent() = viewModel.showEmptyFieldErrorEvent.observeEvent(viewLifecycleOwner) {
-        Toast.makeText(requireContext(), R.string.field_is_empty, Toast.LENGTH_SHORT).show()
+    private fun observeEmptyFieldErrorEvent() = viewModel.showErrorEvent.observeEvent(viewLifecycleOwner) {
+        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
     }
 
     private fun onCancelButtonPressed() {
-        findTopNavController().popBackStack()
+        findNavController().popBackStack()
     }
 
     private fun observeGoBackEvent() = viewModel.goBackEvent.observeEvent(viewLifecycleOwner) {
-        findTopNavController().popBackStack()
+        findNavController().popBackStack()
     }
 }

@@ -63,7 +63,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         binding.progressBar.visibility = if (state.showProgress) View.VISIBLE else View.INVISIBLE
     }
 
-    private fun observeShowSuccessSignUpMessageEvent() = viewModel.showSuccessSignUpMessageEvent.observeEvent(viewLifecycleOwner) {
+    private fun observeShowSuccessSignUpMessageEvent() = viewModel.showToastEvent.observeEvent(viewLifecycleOwner) {
         Toast.makeText(requireContext(), R.string.sign_up_success, Toast.LENGTH_LONG).show()
     }
 

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.navigationcomponenttabs.R
@@ -42,7 +41,7 @@ class SettingsAdapter(
             holder.checkBox.isChecked = setting.enabled
         }
 
-        val colorName = context.getString(setting.box.colorNameRes)
+        val colorName = setting.box.colorName
         holder.checkBox.text = context.getString(R.string.enable_checkbox, colorName)
     }
 

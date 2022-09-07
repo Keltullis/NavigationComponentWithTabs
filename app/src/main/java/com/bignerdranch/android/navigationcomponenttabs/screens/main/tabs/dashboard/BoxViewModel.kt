@@ -11,7 +11,7 @@ import com.bignerdranch.android.navigationcomponenttabs.utils.publishEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.share
 
 class BoxViewModel(
-    private val boxId: Int,
+    private val boxId: Long,
     private val boxesRepository: BoxesRepository
 ) : ViewModel() {
 

@@ -3,10 +3,12 @@ package com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.profi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.navigationcomponenttabs.R
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.bignerdranch.android.navigationcomponenttabs.model.EmptyFieldException
+import com.bignerdranch.android.navigationcomponenttabs.model.StorageException
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.AccountsRepository
 import com.bignerdranch.android.navigationcomponenttabs.utils.MutableLiveEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.MutableUnitLiveEvent
@@ -26,8 +28,8 @@ class EditProfileViewModel(
     private val _goBackEvent = MutableUnitLiveEvent()
     val goBackEvent = _goBackEvent.share()
 
-    private val _showEmptyFieldErrorEvent = MutableUnitLiveEvent()
-    val showEmptyFieldErrorEvent = _showEmptyFieldErrorEvent.share()
+    private val _showErrorEvent = MutableLiveEvent<Int>()
+    val showErrorEvent = _showErrorEvent.share()
 
     init {
         viewModelScope.launch {
@@ -45,8 +47,11 @@ class EditProfileViewModel(
                 accountsRepository.updateAccountUsername(newUsername)
                 goBack()
             } catch (e: EmptyFieldException) {
-                hideProgress()
                 showEmptyFieldErrorMessage()
+            } catch (e: StorageException) {
+                showStorageErrorMessage()
+            } finally {
+                hideProgress()
             }
         }
     }
@@ -61,7 +66,8 @@ class EditProfileViewModel(
         _saveInProgress.value = false
     }
 
-    private fun showEmptyFieldErrorMessage() = _showEmptyFieldErrorEvent.publishEvent()
+    private fun showEmptyFieldErrorMessage() = _showErrorEvent.publishEvent(R.string.field_is_empty)
 
+    private fun showStorageErrorMessage() = _showErrorEvent.publishEvent(R.string.storage_error)
 
 }

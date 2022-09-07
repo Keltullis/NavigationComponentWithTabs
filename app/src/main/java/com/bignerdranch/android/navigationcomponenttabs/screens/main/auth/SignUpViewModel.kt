@@ -12,20 +12,17 @@ import com.bignerdranch.android.navigationcomponenttabs.model.Field
 import com.bignerdranch.android.navigationcomponenttabs.model.PasswordMismatchException
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.AccountsRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.SignUpData
-import com.bignerdranch.android.navigationcomponenttabs.utils.MutableUnitLiveEvent
-import com.bignerdranch.android.navigationcomponenttabs.utils.publishEvent
-import com.bignerdranch.android.navigationcomponenttabs.utils.requireValue
-import com.bignerdranch.android.navigationcomponenttabs.utils.share
+import com.bignerdranch.android.navigationcomponenttabs.utils.*
 
 class SignUpViewModel(
     private val accountsRepository: AccountsRepository
 ) : ViewModel() {
 
-    private val _showSuccessSignUpMessageEvent = MutableUnitLiveEvent()
-    val showSuccessSignUpMessageEvent =_showSuccessSignUpMessageEvent.share()
-
     private val _goBackEvent = MutableUnitLiveEvent()
     val goBackEvent = _goBackEvent.share()
+
+    private val _showToastEvent = MutableLiveEvent<Int>()
+    val showToastEvent = _showToastEvent.share()
 
     private val _state = MutableLiveData(State())
     val state = _state.share()
@@ -79,7 +76,9 @@ class SignUpViewModel(
         _state.value = _state.requireValue().copy(signUpInProgress = false)
     }
 
-    private fun showSuccessSignUpMessage() = _showSuccessSignUpMessageEvent.publishEvent()
+    private fun showSuccessSignUpMessage() = _showToastEvent.publishEvent(R.string.sign_up_success)
+
+    private fun processStorageException() = _showToastEvent.publishEvent(R.string.storage_error)
 
     private fun goBack() = _goBackEvent.publishEvent()
 
