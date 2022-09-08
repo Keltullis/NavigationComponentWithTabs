@@ -11,6 +11,7 @@ import com.bignerdranch.android.navigationcomponenttabs.databinding.FragmentSett
 import com.bignerdranch.android.navigationcomponenttabs.utils.observeEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.viewModelCreator
 
+
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private lateinit var binding: FragmentSettingsBinding

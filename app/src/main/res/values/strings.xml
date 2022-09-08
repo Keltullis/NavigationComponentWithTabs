@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SQLite</string>
+    <string name="app_name">Room Api</string>
 
     <string name="red">Red</string>
     <string name="green">Green</string>

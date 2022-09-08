@@ -3,7 +3,6 @@ package com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.dashb
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.BoxesRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.Box
@@ -18,8 +17,8 @@ class DashboardViewModel(
 
     init {
         viewModelScope.launch {
-            boxesRepository.getBoxes(onlyActive = true).collect {
-                _boxes.value = it
+            boxesRepository.getBoxesAndSettings(onlyActive = true).collect { list ->
+                _boxes.value = list.map { it.box }
             }
         }
     }

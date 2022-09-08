@@ -2,7 +2,6 @@ package com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.dashb
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.BoxesRepository
@@ -20,8 +19,8 @@ class BoxViewModel(
 
     init {
         viewModelScope.launch {
-            boxesRepository.getBoxes(onlyActive = true)
-                .map { boxes -> boxes.firstOrNull { it.id == boxId } }
+            boxesRepository.getBoxesAndSettings(onlyActive = true)
+                .map { boxes -> boxes.firstOrNull { it.box.id == boxId } }
                 .collect { currentBox ->
                     _shouldExitEvent.publishEvent(currentBox == null)
                 }

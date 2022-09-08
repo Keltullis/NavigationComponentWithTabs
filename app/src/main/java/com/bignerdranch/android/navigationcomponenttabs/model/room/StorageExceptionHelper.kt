@@ -1,4 +1,4 @@
-package com.bignerdranch.android.navigationcomponenttabs.model.sqlite
+package com.bignerdranch.android.navigationcomponenttabs.model.room
 
 import android.database.sqlite.SQLiteException
 import kotlinx.coroutines.CoroutineDispatcher

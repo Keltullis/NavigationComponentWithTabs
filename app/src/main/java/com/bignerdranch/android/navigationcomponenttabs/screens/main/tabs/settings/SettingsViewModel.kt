@@ -3,13 +3,12 @@ package com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.setti
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import com.bignerdranch.android.navigationcomponenttabs.R
 import com.bignerdranch.android.navigationcomponenttabs.model.StorageException
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.BoxesRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.Box
+import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.BoxAndSettings
 import com.bignerdranch.android.navigationcomponenttabs.utils.MutableLiveEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.publishEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.share
@@ -19,7 +18,7 @@ class SettingsViewModel(
     private val boxesRepository: BoxesRepository
 ) : ViewModel(), SettingsAdapter.Listener {
 
-    private val _boxSettings = MutableLiveData<List<BoxSetting>>()
+    private val _boxSettings = MutableLiveData<List<BoxAndSettings>>()
     val boxSettings = _boxSettings.share()
 
     private val _showErrorMessageEvent = MutableLiveEvent<Int>()
@@ -27,12 +26,7 @@ class SettingsViewModel(
 
     init {
         viewModelScope.launch {
-            val allBoxesFlow = boxesRepository.getBoxes(onlyActive = false)
-            val activeBoxesFlow = boxesRepository.getBoxes(onlyActive = true)
-            val boxSettingsFlow = combine(allBoxesFlow, activeBoxesFlow) { allBoxes, activeBoxes ->
-                allBoxes.map { BoxSetting(it, activeBoxes.contains(it)) } // O^n2 performance, should be optimized for large lists
-            }
-            boxSettingsFlow.collect {
+            boxesRepository.getBoxesAndSettings().collect {
                 _boxSettings.value = it
             }
         }
