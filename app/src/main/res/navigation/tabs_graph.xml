@@ -7,5 +7,6 @@
     <include app:graph="@navigation/dashboard" />
     <include app:graph="@navigation/settings" />
     <include app:graph="@navigation/profile" />
+    <include app:graph="@navigation/admin" />
 
 </navigation>

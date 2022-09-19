@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.profile.ProfileFragment"
-        android:label="@string/profile"
+        android:label="@string/screen_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

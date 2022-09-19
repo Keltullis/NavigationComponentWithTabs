@@ -3,6 +3,7 @@ package com.bignerdranch.android.navigationcomponenttabs.model.accounts
 import kotlinx.coroutines.flow.Flow
 import com.bignerdranch.android.navigationcomponenttabs.model.*
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.Account
+import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.AccountFullData
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.SignUpData
 
 /**
@@ -21,7 +22,7 @@ interface AccountsRepository {
      * @throws [AuthException]
      * @throws [StorageException]
      */
-    suspend fun signIn(email: String, password: String)
+    suspend fun signIn(email: String, password: CharArray)
 
     /**
      * Create a new account.
@@ -49,5 +50,11 @@ interface AccountsRepository {
      * @throws [StorageException]
      */
     suspend fun updateAccountUsername(newUsername: String)
+
+    /**
+     * Get all accounts with their boxes and settings.
+     * Only admin user can do this. Otherwise [AuthException] is thrown.
+     */
+    suspend fun getAllData(): Flow<List<AccountFullData>>
 
 }

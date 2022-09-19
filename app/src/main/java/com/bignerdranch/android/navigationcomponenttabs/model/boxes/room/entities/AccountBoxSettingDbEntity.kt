@@ -1,9 +1,6 @@
 package com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
+import androidx.room.*
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.AccountDbEntity
 
 @Entity(
@@ -27,10 +24,12 @@ import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.enti
     primaryKeys = ["account_id", "box_id"],
     indices = [Index("box_id")]
 )
+
+// С помощью аннотации Embedded,мы вынесли третье поле в отдельный класс(это учебный пример,тут это по сути не нужно)
 data class AccountBoxSettingDbEntity(
     @ColumnInfo(name = "account_id") val accountId:Long,
     @ColumnInfo(name = "box_id") val boxId:Long,
-    @ColumnInfo(name = "is_active") val isActive:Boolean
+    @Embedded val settings:SettingsTuple
 )
 // Параметры внешних ключей
 // 1 из какой таблицы

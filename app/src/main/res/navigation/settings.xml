@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.bignerdranch.android.navigationcomponenttabs.screens.main.tabs.settings.SettingsFragment"
-        android:label="@string/settings"
+        android:label="@string/screen_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

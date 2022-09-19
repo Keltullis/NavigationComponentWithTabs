@@ -7,9 +7,10 @@ import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.enti
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.BoxesDao
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.entities.AccountBoxSettingDbEntity
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.entities.BoxDbEntity
+import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.views.SettingDbView
 
 // Версия и массив таблиц
-@Database(version = 1 , entities = [AccountDbEntity::class,BoxDbEntity::class,AccountBoxSettingDbEntity::class])
+@Database(version = 1 , entities = [AccountDbEntity::class,BoxDbEntity::class,AccountBoxSettingDbEntity::class], views = [SettingDbView::class])
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getAccountsDao():AccountsDao

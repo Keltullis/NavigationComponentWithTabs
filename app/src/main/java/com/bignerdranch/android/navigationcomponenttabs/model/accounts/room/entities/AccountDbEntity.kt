@@ -38,7 +38,7 @@ data class AccountDbEntity(
             id = 0,
             email = signUpData.email,
             username = signUpData.username,
-            password = signUpData.password,
+            password = String(signUpData.password),
             createdAt = System.currentTimeMillis()
         )
     }

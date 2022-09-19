@@ -1,12 +1,7 @@
 package com.bignerdranch.android.navigationcomponenttabs.model.accounts.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.AccountDbEntity
-import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.AccountSignInTuple
-import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.AccountUpdateUsernameTuple
+import androidx.room.*
+import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.*
 import kotlinx.coroutines.flow.Flow
 
 // Интерфейс,в котором хранятся описание всех операций с таблицей,реализацию сделает сам Room
@@ -23,4 +18,12 @@ interface AccountsDao {
 
     @Query("SELECT * FROM accounts WHERE id = :accountId")
     fun getById(accountId:Long):Flow<AccountDbEntity?>
+
+    @Transaction
+    @Query("SELECT * FROM accounts WHERE accounts.id = :accountId")
+    fun getAccountAndEditedBoxes(accountId:Long): AccountAndEditedBoxesTuple
+
+    @Transaction
+    @Query("SELECT * FROM accounts")
+    fun getAllData():Flow<List<AccountAndSettingsTuple>>
 }

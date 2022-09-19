@@ -10,9 +10,11 @@ import com.bignerdranch.android.navigationcomponenttabs.model.EmptyFieldExceptio
 import com.bignerdranch.android.navigationcomponenttabs.model.Field
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.AccountsRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.Account
+import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.AccountFullData
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.SignUpData
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.AccountDbEntity
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.entities.AccountUpdateUsernameTuple
+import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.BoxAndSettings
 import com.bignerdranch.android.navigationcomponenttabs.model.room.wrapSQLiteException
 import com.bignerdranch.android.navigationcomponenttabs.model.settings.AppSettings
 import com.bignerdranch.android.navigationcomponenttabs.utils.AsyncLoader
@@ -32,9 +34,9 @@ class RoomAccountsRepository(
         return appSettings.getCurrentAccountId() != AppSettings.NO_ACCOUNT_ID
     }
 
-    override suspend fun signIn(email: String, password: String) = wrapSQLiteException(ioDispatcher) {
+    override suspend fun signIn(email: String, password: CharArray) = wrapSQLiteException(ioDispatcher) {
         if (email.isBlank()) throw EmptyFieldException(Field.Email)
-        if (password.isBlank()) throw EmptyFieldException(Field.Password)
+        if (password.isEmpty()) throw EmptyFieldException(Field.Password)
 
         delay(1000)
 
@@ -80,9 +82,30 @@ class RoomAccountsRepository(
         return@wrapSQLiteException
     }
 
-    private suspend fun findAccountIdByEmailAndPassword(email: String, password: String): Long {
+    override suspend fun getAllData(): Flow<List<AccountFullData>> {
+        val account = getAccount().first()
+        if(account == null || !account.isAdmin()) throw AuthException()
+
+        // Сначала мапим список,а потом мапим конкретный класс
+        return accountsDao.getAllData()
+            .map { accountsAndSettings ->
+                accountsAndSettings.map {accountAndSettingsTuple ->
+                    AccountFullData(
+                        account = accountAndSettingsTuple.accountDbEntity.toAccount(),
+                        boxesAndSettings = accountAndSettingsTuple.settings.map {
+                            BoxAndSettings(
+                                box = it.boxDbEntity.toBox(),
+                                isActive = it.accountBoxSettingsDbEntity.settings.isActive
+                            )
+                        }
+                    )
+                }
+            }
+    }
+
+    private suspend fun findAccountIdByEmailAndPassword(email: String, password: CharArray): Long {
         val tuple = accountsDao.findByEmail(email) ?: throw AuthException()
-        if(tuple.password != password) throw AuthException()
+        if (!tuple.password.toCharArray().contentEquals(password)) throw AuthException()
         return tuple.id
     }
 
@@ -90,7 +113,7 @@ class RoomAccountsRepository(
         try {
             val entity = AccountDbEntity.fromSignUpData(signUpData)
             accountsDao.createAccount(entity)
-        } catch (e:SQLiteConstraintException){
+        } catch (e: SQLiteConstraintException) {
             val appException = AccountAlreadyExistsException()
             appException.initCause(e)
             throw appException
@@ -98,13 +121,11 @@ class RoomAccountsRepository(
     }
 
     private fun getAccountById(accountId: Long): Flow<Account?> {
-        return accountsDao.getById(accountId).map { accountDbEntity -> accountDbEntity?.toAccount() }
+        return accountsDao.getById(accountId).map { it?.toAccount() }
     }
 
     private suspend fun updateUsernameForAccountId(accountId: Long, newUsername: String) {
-        accountsDao.updateUsername(
-            AccountUpdateUsernameTuple(accountId,newUsername)
-        )
+        accountsDao.updateUsername(AccountUpdateUsernameTuple(accountId, newUsername))
     }
 
     private class AccountId(val value: Long)

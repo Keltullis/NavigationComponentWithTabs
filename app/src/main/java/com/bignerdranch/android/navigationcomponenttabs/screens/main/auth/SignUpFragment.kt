@@ -14,6 +14,7 @@ import com.bignerdranch.android.navigationcomponenttabs.databinding.FragmentSign
 import com.bignerdranch.android.navigationcomponenttabs.model.accounts.entities.SignUpData
 import com.bignerdranch.android.navigationcomponenttabs.utils.observeEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.viewModelCreator
+import com.bignerdranch.android.navigationcomponenttabs.utils.toCharArray
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
@@ -42,8 +43,8 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         val signUpData = SignUpData(
             email = binding.emailEditText.text.toString(),
             username = binding.usernameEditText.text.toString(),
-            password = binding.passwordEditText.text.toString(),
-            repeatPassword = binding.repeatPasswordEditText.text.toString(),
+            password = binding.passwordEditText.text.toCharArray(),
+            repeatPassword = binding.repeatPasswordEditText.text.toCharArray(),
         )
         viewModel.signUp(signUpData)
     }

@@ -5,12 +5,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.bignerdranch.android.navigationcomponenttabs.R
 import com.bignerdranch.android.navigationcomponenttabs.Repositories
 import com.bignerdranch.android.navigationcomponenttabs.databinding.FragmentSignInBinding
 import com.bignerdranch.android.navigationcomponenttabs.utils.observeEvent
 import com.bignerdranch.android.navigationcomponenttabs.utils.viewModelCreator
+import com.bignerdranch.android.navigationcomponenttabs.utils.toCharArray
 
 class SignInFragment : Fragment(R.layout.fragment_sign_in) {
 
@@ -33,7 +33,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     private fun onSignInButtonPressed() {
         viewModel.signIn(
             email = binding.emailEditText.text.toString(),
-            password = binding.passwordEditText.text.toString()
+            password = binding.passwordEditText.text.toCharArray()
         )
     }
 

@@ -1,5 +1,6 @@
 package com.bignerdranch.android.navigationcomponenttabs.model.boxes.room
 
+import android.graphics.Color
 import com.bignerdranch.android.navigationcomponenttabs.model.AuthException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -8,6 +9,7 @@ import com.bignerdranch.android.navigationcomponenttabs.model.boxes.BoxesReposit
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.Box
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.BoxAndSettings
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.entities.AccountBoxSettingDbEntity
+import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.entities.SettingsTuple
 import com.bignerdranch.android.navigationcomponenttabs.model.room.wrapSQLiteException
 
 class RoomBoxesRepository(
@@ -42,11 +44,11 @@ class RoomBoxesRepository(
     private fun queryBoxesAndSettings(accountId: Long): Flow<List<BoxAndSettings>> {
         return boxesDao.getBoxesAndSettings(accountId).map { entities ->
             entities.map {
-                val boxEntity = it.key
-                val settingsEntity = it.value
+                val boxEntity = it.boxDbEntity
+                val settingEntity = it.settingsDbEntity
                 BoxAndSettings(
-                    boxEntity.toBox(),
-                    settingsEntity == null || settingsEntity.isActive
+                    box =boxEntity.toBox(),
+                    isActive = settingEntity.settings.isActive
                 )
             }
         }
@@ -58,7 +60,7 @@ class RoomBoxesRepository(
             AccountBoxSettingDbEntity(
                 accountId = account.id,
                 boxId = box.id,
-                isActive = isActive
+                settings = SettingsTuple(isActive = isActive)
             )
         )
     }
