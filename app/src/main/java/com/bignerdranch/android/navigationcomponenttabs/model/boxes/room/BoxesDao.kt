@@ -20,6 +20,6 @@ interface BoxesDao {
     fun getBoxesAndSettings(accountId:Long):Flow<List<SettingWithEntitiesTuples>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun setActiveFlagForBox(accountBoxSettingDbEntity: AccountBoxSettingDbEntity)
+    suspend fun setActiveFlagForBox(accountBoxSetting: AccountBoxSettingDbEntity)
 
 }

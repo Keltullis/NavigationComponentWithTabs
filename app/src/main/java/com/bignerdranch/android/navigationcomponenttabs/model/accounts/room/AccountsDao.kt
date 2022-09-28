@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 // Интерфейс,в котором хранятся описание всех операций с таблицей,реализацию сделает сам Room
 @Dao
 interface AccountsDao {
-    @Query("SELECT id, password FROM accounts WHERE email = :email")
+    @Query("SELECT id, hash, salt FROM accounts WHERE email = :email")
     suspend fun findByEmail(email:String): AccountSignInTuple?
 
     @Update(entity = AccountDbEntity::class)
@@ -25,5 +25,5 @@ interface AccountsDao {
 
     @Transaction
     @Query("SELECT * FROM accounts")
-    fun getAllData():Flow<List<AccountAndSettingsTuple>>
+    fun getAllData():Flow<List<AccountAndAllSettingsTuple>>
 }

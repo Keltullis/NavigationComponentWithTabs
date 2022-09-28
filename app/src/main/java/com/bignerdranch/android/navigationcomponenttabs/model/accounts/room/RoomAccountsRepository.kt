@@ -18,10 +18,12 @@ import com.bignerdranch.android.navigationcomponenttabs.model.boxes.entities.Box
 import com.bignerdranch.android.navigationcomponenttabs.model.room.wrapSQLiteException
 import com.bignerdranch.android.navigationcomponenttabs.model.settings.AppSettings
 import com.bignerdranch.android.navigationcomponenttabs.utils.AsyncLoader
+import com.bignerdranch.android.navigationcomponenttabs.utils.security.SecurityUtils
 
 class RoomAccountsRepository(
     private val accountsDao: AccountsDao,
     private val appSettings: AppSettings,
+    private val securityUtils: SecurityUtils,
     private val ioDispatcher: CoroutineDispatcher
 ) : AccountsRepository {
 
@@ -84,12 +86,11 @@ class RoomAccountsRepository(
 
     override suspend fun getAllData(): Flow<List<AccountFullData>> {
         val account = getAccount().first()
-        if(account == null || !account.isAdmin()) throw AuthException()
+        if (account == null || !account.isAdmin()) throw AuthException()
 
-        // Сначала мапим список,а потом мапим конкретный класс
         return accountsDao.getAllData()
             .map { accountsAndSettings ->
-                accountsAndSettings.map {accountAndSettingsTuple ->
+                accountsAndSettings.map { accountAndSettingsTuple ->
                     AccountFullData(
                         account = accountAndSettingsTuple.accountDbEntity.toAccount(),
                         boxesAndSettings = accountAndSettingsTuple.settings.map {
@@ -105,13 +106,17 @@ class RoomAccountsRepository(
 
     private suspend fun findAccountIdByEmailAndPassword(email: String, password: CharArray): Long {
         val tuple = accountsDao.findByEmail(email) ?: throw AuthException()
-        if (!tuple.password.toCharArray().contentEquals(password)) throw AuthException()
+        // Превращаем строку в массив байтов,получаем хэш используя солт,превращаем массив байтов хэша в строку,сравниваем строку хэша с базы с тем что мы насчитали
+        val saltBytes = securityUtils.stringToBytes(tuple.salt)
+        val hashBytes = securityUtils.passwordToHash(password,saltBytes)
+        val hashString = securityUtils.bytesToString(hashBytes)
+        if (tuple.hash != hashString) throw AuthException()
         return tuple.id
     }
 
     private suspend fun createAccount(signUpData: SignUpData) {
         try {
-            val entity = AccountDbEntity.fromSignUpData(signUpData)
+            val entity = AccountDbEntity.fromSignUpData(signUpData, securityUtils)
             accountsDao.createAccount(entity)
         } catch (e: SQLiteConstraintException) {
             val appException = AccountAlreadyExistsException()

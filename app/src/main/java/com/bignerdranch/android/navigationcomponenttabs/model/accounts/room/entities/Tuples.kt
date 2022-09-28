@@ -8,7 +8,8 @@ import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.views.S
 
 data class AccountSignInTuple(
     @ColumnInfo(name = "id") val id: Long,
-    @ColumnInfo(name = "password") val password: String
+    @ColumnInfo(name = "hash") val hash:String,
+    @ColumnInfo(name = "salt") val salt: String
 )
 
 data class AccountUpdateUsernameTuple(
@@ -32,7 +33,7 @@ data class AccountAndEditedBoxesTuple(
      val boxes:List<BoxDbEntity>
 )
 
-data class AccountAndSettingsTuple(
+data class AccountAndAllSettingsTuple(
     @Embedded val accountDbEntity: AccountDbEntity,
 
     @Relation(

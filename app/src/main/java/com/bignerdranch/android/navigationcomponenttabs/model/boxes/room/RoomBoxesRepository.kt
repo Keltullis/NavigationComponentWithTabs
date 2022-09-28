@@ -42,7 +42,8 @@ class RoomBoxesRepository(
     }
 
     private fun queryBoxesAndSettings(accountId: Long): Flow<List<BoxAndSettings>> {
-        return boxesDao.getBoxesAndSettings(accountId).map { entities ->
+        return boxesDao.getBoxesAndSettings(accountId)
+            .map { entities ->
             entities.map {
                 val boxEntity = it.boxDbEntity
                 val settingEntity = it.settingsDbEntity

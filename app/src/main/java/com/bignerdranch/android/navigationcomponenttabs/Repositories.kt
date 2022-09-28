@@ -10,8 +10,11 @@ import com.bignerdranch.android.navigationcomponenttabs.model.accounts.room.Room
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.BoxesRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.boxes.room.RoomBoxesRepository
 import com.bignerdranch.android.navigationcomponenttabs.model.room.AppDatabase
+import com.bignerdranch.android.navigationcomponenttabs.model.room.MIGRATION_2_3
 import com.bignerdranch.android.navigationcomponenttabs.model.settings.AppSettings
 import com.bignerdranch.android.navigationcomponenttabs.model.settings.SharedPreferencesAppSettings
+import com.bignerdranch.android.navigationcomponenttabs.utils.security.DefaultSecurityUtilsImpl
+import com.bignerdranch.android.navigationcomponenttabs.utils.security.SecurityUtils
 
 object Repositories {
 
@@ -19,8 +22,13 @@ object Repositories {
 
     // -- stuffs
 
+    val securityUtils: SecurityUtils by lazy { DefaultSecurityUtilsImpl() }
+
+    // Прописываем РУЧНЫЕ миграции
     private val database: AppDatabase by lazy<AppDatabase> {
-        Room.databaseBuilder(applicationContext, AppDatabase::class.java,"database.db").createFromAsset("initial_database.db")
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database.db")
+            .addMigrations(MIGRATION_2_3)
+            .createFromAsset("initial_database.db")
             .build()
     }
 
@@ -33,7 +41,7 @@ object Repositories {
     // --- repositories
 
     val accountsRepository: AccountsRepository by lazy {
-        RoomAccountsRepository(database.getAccountsDao(), appSettings, ioDispatcher)
+        RoomAccountsRepository(database.getAccountsDao(), appSettings, securityUtils, ioDispatcher)
     }
 
     val boxesRepository: BoxesRepository by lazy {
